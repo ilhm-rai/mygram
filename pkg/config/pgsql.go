@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/ilhm-rai/mygram/pkg/entity"
 	"github.com/ilhm-rai/mygram/pkg/exception"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -28,6 +29,8 @@ func NewPostgresDatabase(configuration Config) *gorm.DB {
 	DB, err := gorm.Open(postgres.Open(dns), &gorm.Config{})
 
 	exception.PanicIfNeeded(err)
+
+	DB.Debug().AutoMigrate(entity.User{}, entity.Comment{}, entity.Photo{}, entity.SocialMedia{})
 
 	return DB.WithContext(ctx)
 }
