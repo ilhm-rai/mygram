@@ -3,7 +3,7 @@ package config
 import (
 	"os"
 
-	"github.com/ilhm-rai/mygram/pkg/exception"
+	"github.com/ilhm-rai/mygram/exception"
 	"github.com/joho/godotenv"
 )
 

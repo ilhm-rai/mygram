@@ -2,6 +2,9 @@ package entity
 
 import (
 	"time"
+
+	"github.com/ilhm-rai/mygram/helper"
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -14,4 +17,9 @@ type User struct {
 	UpdatedAt   time.Time
 	Photos      []Photo
 	SocialMedia []SocialMedia
+}
+
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
+	u.Password = helper.GeneratePass(u.Password)
+	return
 }

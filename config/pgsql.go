@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ilhm-rai/mygram/pkg/entity"
-	"github.com/ilhm-rai/mygram/pkg/exception"
+	"github.com/ilhm-rai/mygram/entity"
+	"github.com/ilhm-rai/mygram/exception"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -26,13 +26,15 @@ func NewPostgresDatabase(configuration Config) *gorm.DB {
 	port := configuration.Get("PGPORT")
 	dns := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", host, user, password, dbname, port)
 
-	DB, err := gorm.Open(postgres.Open(dns), &gorm.Config{})
+	DB, err := gorm.Open(postgres.Open(dns), &gorm.Config{TranslateError: true})
 
 	exception.PanicIfNeeded(err)
 
 	DB.Debug().AutoMigrate(entity.User{}, entity.Comment{}, entity.Photo{}, entity.SocialMedia{})
 
-	return DB.WithContext(ctx)
+	DB.WithContext(ctx)
+
+	return DB
 }
 
 func NewPostgresContext() (context.Context, context.CancelFunc) {
