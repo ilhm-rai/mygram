@@ -14,14 +14,18 @@ func main() {
 	database := config.NewPostgresDatabase(configuration)
 
 	userRepository := repository.NewUserRepository(database)
+	photoRepository := repository.NewPhotoRepository(database)
 
 	authService := service.NewAuthService(&userRepository)
+	photoService := service.NewPhotoService(&photoRepository)
 
 	authController := controller.NewAuthController(&authService)
+	photoController := controller.NewPhotoController(&photoService)
 
 	app := gin.Default()
 
 	authController.Route(app)
+	photoController.Route(app)
 
 	err := app.Run(":" + configuration.Get("PORT"))
 	exception.PanicIfNeeded(err)

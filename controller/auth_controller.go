@@ -1,26 +1,18 @@
 package controller
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"github.com/ilhm-rai/mygram/model"
 	"github.com/ilhm-rai/mygram/service"
-	"github.com/ilhm-rai/mygram/validation"
 )
 
 type AuthController struct {
 	AuthService service.AuthService
 }
 
-var (
-	validate *validator.Validate
-)
-
 func NewAuthController(authService *service.AuthService) AuthController {
-	validate = validator.New()
 	return AuthController{
 		AuthService: *authService,
 	}
@@ -34,7 +26,7 @@ func (controller *AuthController) Route(app *gin.Engine) {
 func (controller *AuthController) Register(c *gin.Context) {
 	var request model.RegisterUserRequest
 
-	valid := controller.ValidateRequest(c, &request)
+	valid := validateRequest(c, &request)
 
 	if !valid {
 		return
@@ -68,7 +60,7 @@ func (controller *AuthController) Register(c *gin.Context) {
 func (controller *AuthController) Login(c *gin.Context) {
 	var request model.LoginUserRequest
 
-	valid := controller.ValidateRequest(c, &request)
+	valid := validateRequest(c, &request)
 	if !valid {
 		return
 	}
@@ -104,31 +96,4 @@ func (controller *AuthController) Login(c *gin.Context) {
 		},
 		Errors: nil,
 	})
-}
-
-func (controller *AuthController) ValidateRequest(c *gin.Context, request interface{}) bool {
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, model.ErrResponse{
-			Code:    http.StatusBadRequest,
-			Message: err.Error(),
-		})
-		return false
-	}
-
-	if err := validate.Struct(request); err != nil {
-		var ve validator.ValidationErrors
-		if errors.As(err, &ve) {
-			errs := make([]model.ErrorMsg, len(ve))
-			for i, fe := range ve {
-				errs[i] = model.ErrorMsg{Field: fe.Field(), Message: validation.GetErrorMsg(fe)}
-			}
-			c.AbortWithStatusJSON(http.StatusBadRequest, model.WebResponse{
-				Code:   http.StatusBadRequest,
-				Data:   nil,
-				Errors: errs,
-			})
-		}
-		return false
-	}
-	return true
 }
