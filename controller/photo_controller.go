@@ -21,7 +21,7 @@ func NewPhotoController(photoService *service.PhotoService) PhotoController {
 	}
 }
 
-func (controller *PhotoController) Route(app *gin.Engine) {
+func (controller *PhotoController) Route(app *gin.RouterGroup) {
 	photoRouter := app.Group("photos")
 	{
 		photoRouter.Use(authentication())
@@ -33,6 +33,15 @@ func (controller *PhotoController) Route(app *gin.Engine) {
 	}
 }
 
+// FindPhotos godoc
+// @Summary Find all photos
+// @Description Find all photos from all users
+// @Tags photos
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Success 200 {object} model.WebResponse
+// @Router /photos [get]
 func (controller *PhotoController) FindPhotos(c *gin.Context) {
 	photos, err := controller.PhotoService.FindAll()
 
@@ -51,6 +60,17 @@ func (controller *PhotoController) FindPhotos(c *gin.Context) {
 	})
 }
 
+// FindPhoto godoc
+// @Summary Find photo by id
+// @Description Find a photo identified by the given id
+// @Tags photos
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Param id path int true "ID of the photo"
+// @Success 200 {object} model.WebResponse
+// @Failure 404 {object} model.ErrResponse
+// @Router /photos/{id} [get]
 func (controller *PhotoController) FindPhoto(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -78,6 +98,16 @@ func (controller *PhotoController) FindPhoto(c *gin.Context) {
 	})
 }
 
+// CreatePhoto godoc
+// @Summary Create a new photo
+// @Description Create a new photo for specific user
+// @Tags photos
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Param model.SavePhotoRequest body model.SavePhotoRequest true "create photo request"
+// @Success 200 {object} model.WebResponse
+// @Router /photos [post]
 func (controller PhotoController) CreatePhoto(c *gin.Context) {
 	var request model.SavePhotoRequest
 
@@ -106,6 +136,18 @@ func (controller PhotoController) CreatePhoto(c *gin.Context) {
 	})
 }
 
+// UpdatePhoto godoc
+// @Summary Update a photo
+// @Description Update a photo identified by the given id
+// @Tags photos
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Param id path int true "ID of the photo to be updated"
+// @Param model.SavePhotoRequest body model.SavePhotoRequest true "update photo request"
+// @Success 200 {object} model.WebResponse
+// @Failure 404 {object} model.ErrResponse
+// @Router /photos/{id} [put]
 func (controller PhotoController) UpdatePhoto(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var request model.SavePhotoRequest
@@ -136,6 +178,17 @@ func (controller PhotoController) UpdatePhoto(c *gin.Context) {
 	})
 }
 
+// DeletePhoto godoc
+// @Summary Delete a photo
+// @Description Delete a photo identified by the given id
+// @Tags photos
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Param id path int true "ID of the photo to be deleted"
+// @Success 200 {object} model.WebResponse
+// @Failure 404 {object} model.ErrResponse
+// @Router /photos/{id} [delete]
 func (controller PhotoController) DeletePhoto(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 

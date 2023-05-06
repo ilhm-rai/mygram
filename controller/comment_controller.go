@@ -21,7 +21,7 @@ func NewCommentController(photoService *service.CommentService) CommentControlle
 	}
 }
 
-func (controller *CommentController) Route(app *gin.Engine) {
+func (controller *CommentController) Route(app *gin.RouterGroup) {
 	photoRouter := app.Group("comments")
 	{
 		photoRouter.Use(authentication())
@@ -33,6 +33,16 @@ func (controller *CommentController) Route(app *gin.Engine) {
 	}
 }
 
+// FindComments godoc
+// @Summary Find all comments
+// @Description Find all comments of all photos
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Success 200 {object} model.WebResponse
+// @Failure 500 {object} model.ErrResponse
+// @Router /comments [get]
 func (controller *CommentController) FindComments(c *gin.Context) {
 	comments, err := controller.CommentService.FindAll()
 
@@ -51,6 +61,18 @@ func (controller *CommentController) FindComments(c *gin.Context) {
 	})
 }
 
+// FindComment godoc
+// @Summary Find comment by id
+// @Description Find a comment identified by the given id
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Param id path int true "ID of the comment"
+// @Success 200 {object} model.WebResponse
+// @Failure 404 {object} model.ErrResponse
+// @Failure 500 {object} model.ErrResponse
+// @Router /comments/{id} [get]
 func (controller *CommentController) FindComment(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -78,6 +100,17 @@ func (controller *CommentController) FindComment(c *gin.Context) {
 	})
 }
 
+// CreateComment godoc
+// @Summary Create a new comment
+// @Description Create a new comment for specific photo
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Param model.SaveCommentRequest body model.SaveCommentRequest true "create comment request"
+// @Success 200 {object} model.WebResponse
+// @Failure 500 {object} model.ErrResponse
+// @Router /comments [post]
 func (controller CommentController) CreateComment(c *gin.Context) {
 	var request model.SaveCommentRequest
 
@@ -106,6 +139,19 @@ func (controller CommentController) CreateComment(c *gin.Context) {
 	})
 }
 
+// UpdateComment godoc
+// @Summary Update a comment
+// @Description Update a comment identified by the given id
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Param id path int true "ID of the comment to be updated"
+// @Param model.SaveCommentRequest body model.SaveCommentRequest true "update comment request"
+// @Success 200 {object} model.WebResponse
+// @Failure 404 {object} model.ErrResponse
+// @Failure 500 {object} model.ErrResponse
+// @Router /comments/{id} [put]
 func (controller CommentController) UpdateComment(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var request model.SaveCommentRequest
@@ -136,6 +182,18 @@ func (controller CommentController) UpdateComment(c *gin.Context) {
 	})
 }
 
+// DeleteComment godoc
+// @Summary Delete a comment
+// @Description Delete a comment identified by the given id
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Param id path int true "ID of the comment to be deleted"
+// @Success 200 {object} model.WebResponse
+// @Failure 404 {object} model.ErrResponse
+// @Failure 500 {object} model.ErrResponse
+// @Router /comments/{id} [delete]
 func (controller CommentController) DeleteComment(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 

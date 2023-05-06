@@ -1,0 +1,615 @@
+basePath: /api/v1
+definitions:
+  model.ErrResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  model.ErrorMsg:
+    properties:
+      field:
+        type: string
+      message:
+        type: string
+    type: object
+  model.LoginUserRequest:
+    properties:
+      emailOrUsername:
+        type: string
+      password:
+        type: string
+    required:
+    - emailOrUsername
+    - password
+    type: object
+  model.RegisterUserRequest:
+    properties:
+      age:
+        minimum: 8
+        type: integer
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      username:
+        type: string
+    required:
+    - age
+    - email
+    - password
+    - username
+    type: object
+  model.SaveCommentRequest:
+    properties:
+      message:
+        type: string
+      photo_id:
+        type: integer
+    required:
+    - message
+    - photo_id
+    type: object
+  model.SavePhotoRequest:
+    properties:
+      caption:
+        type: string
+      photo_url:
+        type: string
+      title:
+        type: string
+    required:
+    - photo_url
+    - title
+    type: object
+  model.SaveSocialMediaRequest:
+    properties:
+      name:
+        type: string
+      social_media_url:
+        type: string
+    required:
+    - name
+    - social_media_url
+    type: object
+  model.WebResponse:
+    properties:
+      code:
+        type: integer
+      data: {}
+      errors:
+        items:
+          $ref: '#/definitions/model.ErrorMsg'
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: MyGram is a simple API for Final Project DTS Kominfo
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: MyGram API
+  version: "1.0"
+paths:
+  /comments:
+    get:
+      consumes:
+      - application/json
+      description: Find all comments of all photos
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Find all comments
+      tags:
+      - comments
+    post:
+      consumes:
+      - application/json
+      description: Create a new comment for specific photo
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: create comment request
+        in: body
+        name: model.SaveCommentRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.SaveCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Create a new comment
+      tags:
+      - comments
+  /comments/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a comment identified by the given id
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the comment to be deleted
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Delete a comment
+      tags:
+      - comments
+    get:
+      consumes:
+      - application/json
+      description: Find a comment identified by the given id
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the comment
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Find comment by id
+      tags:
+      - comments
+    put:
+      consumes:
+      - application/json
+      description: Update a comment identified by the given id
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the comment to be updated
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: update comment request
+        in: body
+        name: model.SaveCommentRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.SaveCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Update a comment
+      tags:
+      - comments
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login to MyGram
+      parameters:
+      - description: login request
+        in: body
+        name: model.LoginUserRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Login
+      tags:
+      - auth
+  /photos:
+    get:
+      consumes:
+      - application/json
+      description: Find all photos from all users
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+      summary: Find all photos
+      tags:
+      - photos
+    post:
+      consumes:
+      - application/json
+      description: Create a new photo for specific user
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: create photo request
+        in: body
+        name: model.SavePhotoRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.SavePhotoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+      summary: Create a new photo
+      tags:
+      - photos
+  /photos/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a photo identified by the given id
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the photo to be deleted
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Delete a photo
+      tags:
+      - photos
+    get:
+      consumes:
+      - application/json
+      description: Find a photo identified by the given id
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the photo
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Find photo by id
+      tags:
+      - photos
+    put:
+      consumes:
+      - application/json
+      description: Update a photo identified by the given id
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the photo to be updated
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: update photo request
+        in: body
+        name: model.SavePhotoRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.SavePhotoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Update a photo
+      tags:
+      - photos
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: MyGram new user registration
+      parameters:
+      - description: register request
+        in: body
+        name: model.RegisterUserRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.RegisterUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Register new user
+      tags:
+      - auth
+  /social-media:
+    get:
+      consumes:
+      - application/json
+      description: Find all social media from all users
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Find all social media
+      tags:
+      - social-media
+    post:
+      consumes:
+      - application/json
+      description: Create a new social media for specific user
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: create photo request
+        in: body
+        name: model.SaveSocialMediaRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.SaveSocialMediaRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Create a new social media
+      tags:
+      - social-media
+  /social-media/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Find a social media identified by the given id
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the social media
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Find social media by id
+      tags:
+      - social-media
+    get:
+      consumes:
+      - application/json
+      description: Find a social media identified by the given id
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the social media
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Find social media by id
+      tags:
+      - social-media
+    put:
+      consumes:
+      - application/json
+      description: Update a social media identified by the given id
+      parameters:
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: ID of the social media to be updated
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: update social media request
+        in: body
+        name: model.SaveSocialMediaRequest
+        required: true
+        schema:
+          $ref: '#/definitions/model.SaveSocialMediaRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.WebResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ErrResponse'
+      summary: Update a social media
+      tags:
+      - social-media
+swagger: "2.0"

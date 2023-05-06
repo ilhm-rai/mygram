@@ -18,11 +18,21 @@ func NewAuthController(authService *service.AuthService) AuthController {
 	}
 }
 
-func (controller *AuthController) Route(app *gin.Engine) {
+func (controller *AuthController) Route(app *gin.RouterGroup) {
 	app.POST("/login", controller.Login)
 	app.POST("/register", controller.Register)
 }
 
+// Register godoc
+// @Summary Register new user
+// @Description MyGram new user registration
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param model.RegisterUserRequest body model.RegisterUserRequest true "register request"
+// @Success 200 {object} model.WebResponse
+// @Failure 500 {object} model.ErrResponse
+// @Router /register [post]
 func (controller *AuthController) Register(c *gin.Context) {
 	var request model.RegisterUserRequest
 
@@ -57,6 +67,16 @@ func (controller *AuthController) Register(c *gin.Context) {
 	})
 }
 
+// Login godoc
+// @Summary Login
+// @Description Login to MyGram
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param model.LoginUserRequest body model.LoginUserRequest true "login request"
+// @Success 200 {object} model.WebResponse
+// @Failure 500 {object} model.ErrResponse
+// @Router /login [post]
 func (controller *AuthController) Login(c *gin.Context) {
 	var request model.LoginUserRequest
 
@@ -68,7 +88,7 @@ func (controller *AuthController) Login(c *gin.Context) {
 	token, err := controller.AuthService.Login(request)
 
 	if err != nil {
-		if err.Error() == "account_not_found" {
+		if err.Error() == "user_not_found" {
 			c.AbortWithStatusJSON(http.StatusNotFound, model.ErrResponse{
 				Code:    http.StatusNotFound,
 				Message: "Email or username not found",

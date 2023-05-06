@@ -21,7 +21,7 @@ func NewSocialMediaController(photoService *service.SocialMediaService) SocialMe
 	}
 }
 
-func (controller *SocialMediaController) Route(app *gin.Engine) {
+func (controller *SocialMediaController) Route(app *gin.RouterGroup) {
 	photoRouter := app.Group("social-media")
 	{
 		photoRouter.Use(authentication())
@@ -33,6 +33,16 @@ func (controller *SocialMediaController) Route(app *gin.Engine) {
 	}
 }
 
+// FindSocialMedia godoc
+// @Summary Find all social media
+// @Description Find all social media from all users
+// @Tags social-media
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Success 200 {object} model.WebResponse
+// @Failure 500 {object} model.ErrResponse
+// @Router /social-media [get]
 func (controller *SocialMediaController) FindSocialMedia(c *gin.Context) {
 	socialMedia, err := controller.SocialMediaService.FindAll()
 
@@ -51,6 +61,18 @@ func (controller *SocialMediaController) FindSocialMedia(c *gin.Context) {
 	})
 }
 
+// FindSocialMediaById godoc
+// @Summary Find social media by id
+// @Description Find a social media identified by the given id
+// @Tags social-media
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Param id path int true "ID of the social media"
+// @Success 200 {object} model.WebResponse
+// @Failure 404 {object} model.ErrResponse
+// @Failure 500 {object} model.ErrResponse
+// @Router /social-media/{id} [get]
 func (controller *SocialMediaController) FindSocialMediaById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -78,6 +100,17 @@ func (controller *SocialMediaController) FindSocialMediaById(c *gin.Context) {
 	})
 }
 
+// CreateSocialMedia godoc
+// @Summary Create a new social media
+// @Description Create a new social media for specific user
+// @Tags social-media
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Param model.SaveSocialMediaRequest body model.SaveSocialMediaRequest true "create photo request"
+// @Success 200 {object} model.WebResponse
+// @Failure 500 {object} model.ErrResponse
+// @Router /social-media [post]
 func (controller SocialMediaController) CreateSocialMedia(c *gin.Context) {
 	var request model.SaveSocialMediaRequest
 
@@ -106,6 +139,19 @@ func (controller SocialMediaController) CreateSocialMedia(c *gin.Context) {
 	})
 }
 
+// UpdateSocialMedia godoc
+// @Summary Update a social media
+// @Description Update a social media identified by the given id
+// @Tags social-media
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Param id path int true "ID of the social media to be updated"
+// @Param model.SaveSocialMediaRequest body model.SaveSocialMediaRequest true "update social media request"
+// @Success 200 {object} model.WebResponse
+// @Failure 404 {object} model.ErrResponse
+// @Failure 500 {object} model.ErrResponse
+// @Router /social-media/{id} [put]
 func (controller SocialMediaController) UpdateSocialMedia(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var request model.SaveSocialMediaRequest
@@ -136,6 +182,18 @@ func (controller SocialMediaController) UpdateSocialMedia(c *gin.Context) {
 	})
 }
 
+// FindSocialMedia godoc
+// @Summary Find social media by id
+// @Description Find a social media identified by the given id
+// @Tags social-media
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer"
+// @Param id path int true "ID of the social media"
+// @Success 200 {object} model.WebResponse
+// @Failure 404 {object} model.ErrResponse
+// @Failure 500 {object} model.ErrResponse
+// @Router /social-media/{id} [delete]
 func (controller SocialMediaController) DeleteSocialMedia(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 

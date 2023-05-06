@@ -18,7 +18,7 @@ func (service *authServiceImpl) Login(request model.LoginUserRequest) (token str
 	user, err := service.userRepository.FindByEmailOrUsername(request.EmailOrUsername, request.EmailOrUsername)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			err = errors.New("account_not_found")
+			err = errors.New("user_not_found")
 		}
 		return
 	}
