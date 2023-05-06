@@ -16,20 +16,24 @@ func main() {
 	userRepository := repository.NewUserRepository(database)
 	photoRepository := repository.NewPhotoRepository(database)
 	socialMediaRepository := repository.NewSocialMediaRepository(database)
+	commentRepository := repository.NewCommentRepository(database)
 
 	authService := service.NewAuthService(&userRepository)
 	photoService := service.NewPhotoService(&photoRepository)
 	socialMediaService := service.NewSocialMediaService(&socialMediaRepository)
+	commentService := service.NewCommentService(&commentRepository)
 
 	authController := controller.NewAuthController(&authService)
 	photoController := controller.NewPhotoController(&photoService)
 	socialMediaController := controller.NewSocialMediaController(&socialMediaService)
+	commentController := controller.NewCommentController(&commentService)
 
 	app := gin.Default()
 
 	authController.Route(app)
 	photoController.Route(app)
 	socialMediaController.Route(app)
+	commentController.Route(app)
 
 	err := app.Run(":" + configuration.Get("PORT"))
 	exception.PanicIfNeeded(err)
